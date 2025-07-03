@@ -136,6 +136,47 @@ router.get("/data/issues", async (req, res) => {
 });
 
 
+router.get("/data/pulls", async (req, res) => {
+  const { owner, repo } = req.query;
+
+  try {
+    const userId = Object.keys(userSession)[0];
+    const token = userSession[userId].accessToken;
+
+    const issuesRes = await axios.get(
+      `https://api.github.com/repos/${owner}/${repo}/pulls`,
+      { headers: { Authorization: `token ${token}` } }
+    );
+
+    res.json(issuesRes.data); // ✅ Return open issues
+  } catch (err) {
+    console.error("Issues Error", err);
+    res.status(500).send("Failed to fetch issues");
+  }
+});
+
+
+router.get("/data/users", async (req, res) => {
+  const { org } = req.query;
+
+  try {
+    const userId = Object.keys(userSession)[0];
+    const token = userSession[userId].accessToken;
+
+    const issuesRes = await axios.get(
+      `https://api.github.com/orgs/${org}/members`,
+      { headers: { Authorization: `token ${token}` } }
+    );
+
+    res.json(issuesRes.data); // ✅ Return open issues
+  } catch (err) {
+    console.error("Issues Error", err);
+    res.status(500).send("Failed to fetch issues");
+  }
+});
+
+
+
 router.delete("/logout", async (req, res) => {
   try {
     const userId = Object.keys(userSession)[0];
